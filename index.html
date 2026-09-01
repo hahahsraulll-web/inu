@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Clock - Multiple Time Zones</title>
+    <title>Game Labirin - Escape Maze</title>
     <style>
         * {
             margin: 0;
@@ -12,304 +12,215 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px;
         }
 
         .container {
-            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
             width: 100%;
         }
 
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .header h1 {
-            font-size: 36px;
+            color: #667eea;
             margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 28px;
         }
 
-        .header p {
-            font-size: 14px;
-            opacity: 0.8;
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
-        .clocks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .clock-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
+        .stat-box {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 8px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .clock-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.4);
+        .stat-box label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
         }
 
-        .clock-city {
-            color: #64b5f6;
+        .stat-box span {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: #667eea;
         }
 
-        .clock-time {
-            font-size: 48px;
-            color: #ffffff;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 3px;
-        }
-
-        .clock-date {
-            font-size: 12px;
-            color: #b3e5fc;
-            opacity: 0.8;
-            margin-bottom: 10px;
-        }
-
-        .clock-timezone {
-            font-size: 11px;
-            color: #81d4fa;
-            opacity: 0.7;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        .analog-clock {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 3px solid #64b5f6;
-            position: relative;
-            margin: 15px auto;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
-        }
-
-        .clock-center {
-            width: 12px;
-            height: 12px;
-            background: #64b5f6;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            box-shadow: 0 0 10px rgba(100, 181, 246, 0.8);
-        }
-
-        .hand {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform-origin: bottom center;
-            background: white;
+        #gameCanvas {
+            background: #f9f9f9;
+            border: 3px solid #667eea;
             border-radius: 10px;
-        }
-
-        .hour-hand {
-            width: 6px;
-            height: 40px;
-            margin-left: -3px;
-            background: #64b5f6;
-        }
-
-        .minute-hand {
-            width: 4px;
-            height: 50px;
-            margin-left: -2px;
-            background: #81d4fa;
-        }
-
-        .second-hand {
-            width: 2px;
-            height: 55px;
-            margin-left: -1px;
-            background: #ff6b6b;
-        }
-
-        .clock-number {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: #b3e5fc;
-            font-weight: bold;
-        }
-
-        .clock-number span {
-            display: inline-block;
-            position: absolute;
-            left: 50%;
-            width: 100%;
-            height: 100%;
+            display: block;
+            margin: 20px auto;
+            touch-action: none;
+            cursor: pointer;
         }
 
         .controls {
             text-align: center;
-            margin-top: 30px;
+            margin-bottom: 15px;
         }
 
         .control-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         button {
-            background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+            padding: 12px;
+            background: #667eea;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(66, 165, 245, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         button:hover {
+            background: #764ba2;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(66, 165, 245, 0.6);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         button:active {
             transform: translateY(0);
         }
 
-        .button-add {
-            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
-            box-shadow: 0 4px 15px rgba(67, 160, 71, 0.4);
+        .arrow-btn {
+            font-size: 20px;
         }
 
-        .button-add:hover {
-            box-shadow: 0 6px 20px rgba(67, 160, 71, 0.6);
+        #resetBtn {
+            width: 100%;
+            background: #ff6b6b;
+            font-size: 16px;
         }
 
-        .button-remove {
-            background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
-            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4);
-        }
-
-        .button-remove:hover {
-            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.6);
-        }
-
-        .timezone-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 50px;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-            font-family: 'Courier New', monospace;
-        }
-
-        .timezone-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .timezone-input:focus {
-            outline: none;
-            border-color: #64b5f6;
-            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
-        }
-
-        .remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 107, 107, 0.8);
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            padding: 0;
-        }
-
-        .clock-card:hover .remove-btn {
-            display: flex;
-        }
-
-        .remove-btn:hover {
-            background: rgba(255, 107, 107, 1);
-            transform: scale(1.1);
-        }
-
-        .clock-card {
-            position: relative;
+        #resetBtn:hover {
+            background: #ff5252;
         }
 
         .info {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            margin-top: 20px;
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
         }
 
-        @media (max-width: 768px) {
+        .info p {
+            margin: 5px 0;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: popIn 0.5s ease;
+        }
+
+        .success-message h2 {
+            color: #4caf50;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
             .header h1 {
                 font-size: 24px;
             }
 
-            .clock-time {
-                font-size: 36px;
+            #gameCanvas {
+                max-width: 100%;
             }
 
-            .clocks-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
+            .stats {
+                gap: 5px;
             }
 
-            .control-buttons {
-                flex-direction: column;
+            .stat-box {
+                padding: 8px 12px;
+                font-size: 12px;
             }
 
-            button, .timezone-input {
-                width: 100%;
+            .stat-box span {
+                font-size: 16px;
             }
         }
     </style>
@@ -317,220 +228,333 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🕐 Digital Clock</h1>
-            <p>Waktu Real-Time di Berbagai Zona Waktu</p>
+            <h1>🎮 Escape Maze</h1>
+            <p>Bantu orang keluar dari labirin!</p>
         </div>
 
-        <div class="clocks-grid" id="clocksGrid">
-            <!-- Clock cards akan ditambahkan di sini -->
+        <div class="stats">
+            <div class="stat-box">
+                <label>Level</label>
+                <span id="levelDisplay">1</span>
+            </div>
+            <div class="stat-box">
+                <label>Gerak</label>
+                <span id="movesDisplay">0</span>
+            </div>
+            <div class="stat-box">
+                <label>Waktu</label>
+                <span id="timerDisplay">0s</span>
+            </div>
         </div>
+
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
 
         <div class="controls">
             <div class="control-buttons">
-                <input type="text" class="timezone-input" id="timezoneInput" placeholder="Contoh: Asia/Jakarta, Europe/London, America/New_York">
-                <button class="button-add" onclick="addTimezone()">➕ Tambah Zona Waktu</button>
-                <button onclick="resetToDefault()">🔄 Reset Default</button>
+                <div></div>
+                <button class="arrow-btn" onclick="moveUp()">⬆️</button>
+                <div></div>
+                <button class="arrow-btn" onclick="moveLeft()">⬅️</button>
+                <button class="arrow-btn" onclick="moveDown()">⬇️</button>
+                <button class="arrow-btn" onclick="moveRight()">➡️</button>
             </div>
-            <div class="info">
-                💡 Tip: Masukkan timezone dalam format IANA (contoh: Asia/Jakarta, Europe/Paris, America/Los_Angeles)
-            </div>
+            <button id="resetBtn" onclick="resetGame()">🔄 Mulai Ulang</button>
+        </div>
+
+        <div class="info">
+            <p><strong>🎯 Tujuan:</strong> Gerakkan pemain (biru) ke pintu keluar (hijau)</p>
+            <p><strong>⚠️ Hindari:</strong> Dinding hitam dan musuh merah</p>
+            <p><strong>📱 Kontrol:</strong> Gunakan tombol panah atau sentuh layar</p>
         </div>
     </div>
 
+    <div class="overlay" id="overlay"></div>
+    <div class="success-message" id="successMessage">
+        <h2>🎉 Selamat!</h2>
+        <p id="completionStats"></p>
+        <button onclick="nextLevel()" style="margin-top: 10px;">Level Selanjutnya ➡️</button>
+    </div>
+
     <script>
-        // Default timezones
-        const defaultTimezones = [
-            { city: 'Jakarta', timezone: 'Asia/Jakarta' },
-            { city: 'Tokyo', timezone: 'Asia/Tokyo' },
-            { city: 'London', timezone: 'Europe/London' },
-            { city: 'New York', timezone: 'America/New_York' },
-            { city: 'Sydney', timezone: 'Australia/Sydney' },
-            { city: 'Dubai', timezone: 'Asia/Dubai' }
-        ];
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        let timezones = [...defaultTimezones];
-
-        // Load dari localStorage
-        function loadTimezones() {
-            const saved = localStorage.getItem('timezones');
-            if (saved) {
-                try {
-                    timezones = JSON.parse(saved);
-                } catch (e) {
-                    timezones = [...defaultTimezones];
-                }
+        // Responsive canvas
+        function resizeCanvas() {
+            const containerWidth = canvas.parentElement.offsetWidth - 20;
+            if (containerWidth < 400) {
+                canvas.width = containerWidth;
+                canvas.height = containerWidth;
             }
         }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        // Save ke localStorage
-        function saveTimezones() {
-            localStorage.setItem('timezones', JSON.stringify(timezones));
-        }
+        // Game variables
+        let gameState = {
+            level: 1,
+            playerX: 1,
+            playerY: 1,
+            moves: 0,
+            startTime: Date.now(),
+            isGameOver: false,
+            maze: [],
+            gridSize: 10,
+            enemies: []
+        };
 
-        function updateClock(timezone, cardElement) {
-            const now = new Date();
-            const formatter = new Intl.DateTimeFormat('id-ID', {
-                timeZone: timezone,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            });
+        const TILE_SIZE = canvas.width / gameState.gridSize;
 
-            const parts = formatter.formatToParts(now);
-            const time = parts.map(p => {
-                if (p.type === 'hour' || p.type === 'minute' || p.type === 'second') {
-                    return p.value;
-                }
-                return '';
-            }).join(':');
+        // Maze generator
+        function generateMaze(difficulty) {
+            const maze = Array(gameState.gridSize).fill(null).map(() => 
+                Array(gameState.gridSize).fill(0)
+            );
 
-            const dateFormatter = new Intl.DateTimeFormat('id-ID', {
-                timeZone: timezone,
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            const date = dateFormatter.format(now);
-
-            const timeElement = cardElement.querySelector('.clock-time');
-            const dateElement = cardElement.querySelector('.clock-date');
-            if (timeElement) timeElement.textContent = time;
-            if (dateElement) dateElement.textContent = date;
-
-            // Update analog clock
-            updateAnalogClock(timezone, cardElement, now);
-        }
-
-        function updateAnalogClock(timezone, cardElement, now) {
-            const formatter = new Intl.DateTimeFormat('id-ID', {
-                timeZone: timezone,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            });
-
-            const parts = formatter.formatToParts(now);
-            let hour = 0, minute = 0, second = 0;
-
-            parts.forEach(p => {
-                if (p.type === 'hour') hour = parseInt(p.value);
-                if (p.type === 'minute') minute = parseInt(p.value);
-                if (p.type === 'second') second = parseInt(p.value);
-            });
-
-            const hourHand = cardElement.querySelector('.hour-hand');
-            const minuteHand = cardElement.querySelector('.minute-hand');
-            const secondHand = cardElement.querySelector('.second-hand');
-
-            if (hourHand) {
-                const hourDegrees = (hour % 12 + minute / 60) * 30;
-                hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-            }
-
-            if (minuteHand) {
-                const minuteDegrees = (minute + second / 60) * 6;
-                minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-            }
-
-            if (secondHand) {
-                const secondDegrees = second * 6;
-                secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-            }
-        }
-
-        function renderClocks() {
-            const grid = document.getElementById('clocksGrid');
-            grid.innerHTML = '';
-
-            timezones.forEach((tz, index) => {
-                const card = document.createElement('div');
-                card.className = 'clock-card';
-                card.innerHTML = `
-                    <button class="remove-btn" onclick="removeTimezone(${index})">✕</button>
-                    <div class="clock-city">${tz.city}</div>
-                    
-                    <div class="analog-clock">
-                        <div class="clock-center"></div>
-                        <div class="hour-hand hand"></div>
-                        <div class="minute-hand hand"></div>
-                        <div class="second-hand hand"></div>
-                    </div>
-                    
-                    <div class="clock-time">00:00:00</div>
-                    <div class="clock-date">Loading...</div>
-                    <div class="clock-timezone">${tz.timezone}</div>
-                `;
-                grid.appendChild(card);
-
-                // Update immediately
-                updateClock(tz.timezone, card);
-            });
-        }
-
-        function addTimezone() {
-            const input = document.getElementById('timezoneInput');
-            const value = input.value.trim();
-
-            if (!value) {
-                alert('Masukkan timezone yang valid!');
-                return;
-            }
-
-            // Validasi timezone
-            try {
-                new Intl.DateTimeFormat('id-ID', { timeZone: value });
-                const cityName = value.split('/')[1] || value;
-                timezones.push({ city: cityName, timezone: value });
-                saveTimezones();
-                renderClocks();
-                input.value = '';
-                startClock();
-            } catch (e) {
-                alert('Timezone tidak valid! Gunakan format IANA seperti: Asia/Jakarta, Europe/London, dll');
-            }
-        }
-
-        function removeTimezone(index) {
-            timezones.splice(index, 1);
-            saveTimezones();
-            renderClocks();
-        }
-
-        function resetToDefault() {
-            if (confirm('Apakah Anda yakin ingin kembali ke zona waktu default?')) {
-                timezones = [...defaultTimezones];
-                saveTimezones();
-                renderClocks();
-                startClock();
-            }
-        }
-
-        function startClock() {
-            renderClocks();
-            setInterval(() => {
-                const cards = document.querySelectorAll('.clock-card');
-                cards.forEach((card, index) => {
-                    if (index < timezones.length) {
-                        updateClock(timezones[index].timezone, card);
+            // Buat dinding random berdasarkan level
+            const wallDensity = 0.3 + (difficulty * 0.05);
+            for (let i = 0; i < gameState.gridSize; i++) {
+                for (let j = 0; j < gameState.gridSize; j++) {
+                    if ((i === 0 || j === 0 || i === gameState.gridSize - 1 || j === gameState.gridSize - 1)) {
+                        maze[i][j] = 1; // Border
+                    } else if (Math.random() < wallDensity) {
+                        maze[i][j] = 1; // Wall
                     }
-                });
-            }, 1000);
+                }
+            }
+
+            // Pastikan starting point
+            maze[1][1] = 0;
+            maze[gameState.gridSize - 2][gameState.gridSize - 2] = 0;
+
+            return maze;
         }
 
-        // Enter key to add timezone
-        document.getElementById('timezoneInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addTimezone();
+        // Generate enemies
+        function generateEnemies() {
+            gameState.enemies = [];
+            const enemyCount = 1 + Math.floor(gameState.level / 2);
+            for (let i = 0; i < enemyCount; i++) {
+                gameState.enemies.push({
+                    x: Math.floor(Math.random() * (gameState.gridSize - 4)) + 2,
+                    y: Math.floor(Math.random() * (gameState.gridSize - 4)) + 2,
+                    dx: Math.random() > 0.5 ? 1 : -1,
+                    dy: Math.random() > 0.5 ? 1 : -1
+                });
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            gameState.playerX = 1;
+            gameState.playerY = 1;
+            gameState.moves = 0;
+            gameState.startTime = Date.now();
+            gameState.isGameOver = false;
+            gameState.maze = generateMaze(gameState.level);
+            generateEnemies();
+            document.getElementById('levelDisplay').textContent = gameState.level;
+            document.getElementById('movesDisplay').textContent = '0';
+        }
+
+        // Check collision
+        function canMove(x, y) {
+            if (x < 0 || x >= gameState.gridSize || y < 0 || y >= gameState.gridSize) return false;
+            if (gameState.maze[y][x] === 1) return false;
+            
+            // Check enemy collision
+            for (let enemy of gameState.enemies) {
+                if (enemy.x === x && enemy.y === y) return false;
+            }
+            
+            return true;
+        }
+
+        // Move player
+        function movePlayer(dx, dy) {
+            if (gameState.isGameOver) return;
+
+            const newX = gameState.playerX + dx;
+            const newY = gameState.playerY + dy;
+
+            if (canMove(newX, newY)) {
+                gameState.playerX = newX;
+                gameState.playerY = newY;
+                gameState.moves++;
+                document.getElementById('movesDisplay').textContent = gameState.moves;
+
+                // Check win condition
+                if (gameState.playerX === gameState.gridSize - 2 && 
+                    gameState.playerY === gameState.gridSize - 2) {
+                    winGame();
+                }
+            }
+        }
+
+        // Move enemies
+        function moveEnemies() {
+            for (let enemy of gameState.enemies) {
+                let newX = enemy.x + enemy.dx;
+                let newY = enemy.y + enemy.dy;
+
+                if (!canMove(newX, newY)) {
+                    enemy.dx *= -1;
+                    enemy.dy *= -1;
+                    newX = enemy.x + enemy.dx;
+                    newY = enemy.y + enemy.dy;
+                }
+
+                enemy.x = newX;
+                enemy.y = newY;
+
+                // Check player collision
+                if (enemy.x === gameState.playerX && enemy.y === gameState.playerY) {
+                    gameOver();
+                }
+            }
+        }
+
+        // Draw game
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const tileSize = canvas.width / gameState.gridSize;
+
+            // Draw maze
+            for (let i = 0; i < gameState.gridSize; i++) {
+                for (let j = 0; j < gameState.gridSize; j++) {
+                    if (gameState.maze[i][j] === 1) {
+                        ctx.fillStyle = '#333';
+                        ctx.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                    }
+                }
+            }
+
+            // Draw exit (goal)
+            ctx.fillStyle = '#4caf50';
+            ctx.fillRect(
+                (gameState.gridSize - 2) * tileSize,
+                (gameState.gridSize - 2) * tileSize,
+                tileSize,
+                tileSize
+            );
+            ctx.fillStyle = '#fff';
+            ctx.font = `bold ${tileSize * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🚪', (gameState.gridSize - 1.5) * tileSize, (gameState.gridSize - 1.5) * tileSize);
+
+            // Draw enemies
+            for (let enemy of gameState.enemies) {
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillRect(enemy.x * tileSize, enemy.y * tileSize, tileSize, tileSize);
+                ctx.fillStyle = '#fff';
+                ctx.font = `bold ${tileSize * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('👹', (enemy.x + 0.5) * tileSize, (enemy.y + 0.5) * tileSize);
+            }
+
+            // Draw player
+            ctx.fillStyle = '#2196F3';
+            ctx.fillRect(gameState.playerX * tileSize, gameState.playerY * tileSize, tileSize, tileSize);
+            ctx.fillStyle = '#fff';
+            ctx.font = `bold ${tileSize * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('😊', (gameState.playerX + 0.5) * tileSize, (gameState.playerY + 0.5) * tileSize);
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (!gameState.isGameOver) {
+                moveEnemies();
+                draw();
+
+                // Update timer
+                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+                document.getElementById('timerDisplay').textContent = elapsed + 's';
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Win game
+        function winGame() {
+            gameState.isGameOver = true;
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            document.getElementById('completionStats').innerHTML = 
+                `Level ${gameState.level} selesai!<br>Gerak: ${gameState.moves} | Waktu: ${elapsed}s`;
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('successMessage').classList.add('show');
+        }
+
+        // Game over
+        function gameOver() {
+            gameState.isGameOver = true;
+            document.getElementById('completionStats').innerHTML = 
+                `<span style="color: #ff6b6b;">Game Over! Tertangkap musuh!</span><br>Coba lagi...`;
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('successMessage').classList.add('show');
+        }
+
+        // Next level
+        function nextLevel() {
+            gameState.level++;
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+            initGame();
+            gameLoop();
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState.level = 1;
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+            initGame();
+        }
+
+        // Movement functions
+        function moveUp() { movePlayer(0, -1); }
+        function moveDown() { movePlayer(0, 1); }
+        function moveLeft() { movePlayer(-1, 0); }
+        function moveRight() { movePlayer(1, 0); }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp') { moveUp(); e.preventDefault(); }
+            if (e.key === 'ArrowDown') { moveDown(); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { moveLeft(); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { moveRight(); e.preventDefault(); }
+        });
+
+        // Touch controls
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) moveRight();
+                else moveLeft();
+            } else {
+                if (diffY > 0) moveDown();
+                else moveUp();
             }
         });
 
-        // Start the clock
-        loadTimezones();
-        startClock();
+        // Start game
+        initGame();
+        gameLoop();
     </script>
 </body>
 </html>
