@@ -1,560 +1,399 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Labirin - Escape Maze</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 10px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .stat-box {
-            background: #f0f0f0;
-            padding: 10px 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-box label {
-            display: block;
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .stat-box span {
-            font-size: 18px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        #gameCanvas {
-            background: #f9f9f9;
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            display: block;
-            margin: 20px auto;
-            touch-action: none;
-            cursor: pointer;
-        }
-
-        .controls {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .control-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .arrow-btn {
-            font-size: 20px;
-        }
-
-        #resetBtn {
-            width: 100%;
-            background: #ff6b6b;
-            font-size: 16px;
-        }
-
-        #resetBtn:hover {
-            background: #ff5252;
-        }
-
-        .info {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            margin-top: 15px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .info p {
-            margin: 5px 0;
-        }
-
-        .success-message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            z-index: 1000;
-        }
-
-        .success-message.show {
-            display: block;
-            animation: popIn 0.5s ease;
-        }
-
-        .success-message h2 {
-            color: #4caf50;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .success-message p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            #gameCanvas {
-                max-width: 100%;
-            }
-
-            .stats {
-                gap: 5px;
-            }
-
-            .stat-box {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-
-            .stat-box span {
-                font-size: 16px;
-            }
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Ular Makan Buah — Ketuk untuk Arah</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --panel: rgba(255,255,255,0.06);
+    --accent:#ff7a18;
+    --text:#e6eef8;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background:linear-gradient(180deg,#021026 0%, #061428 100%);
+    color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .game-wrap{
+    position:relative;
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  canvas{
+    background:var(--panel);
+    border-radius:12px;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    touch-action: manipulation;
+  }
+  .hud{
+    position: absolute;
+    top:18px;
+    left:18px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .score, .high{
+    background: rgba(255,255,255,0.04);
+    padding:8px 12px;
+    border-radius:10px;
+    font-weight:600;
+    font-size:14px;
+    color:var(--text);
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .overlay{
+    position: absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .panel{
+    background: rgba(1,7,23,0.6);
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    color:var(--text);
+    pointer-events:auto;
+  }
+  .panel h2{ margin:0 0 8px 0; font-size:20px; }
+  .panel p{ margin:0 0 12px 0; color:#bcd2e6; font-size:14px; }
+  .panel .big{ font-size:28px; font-weight:800; color:var(--accent); }
+  .actions{ display:flex; gap:10px; justify-content:center; margin-top:8px; }
+  .action-btn{
+    padding:8px 12px;border-radius:8px;border:none;background:var(--accent);
+    color:white;font-weight:700;cursor:pointer;
+  }
+  .hint{ position:absolute; bottom:18px; left:18px; color:#bcd2e6; font-size:13px; opacity:0.95; }
+  @media (max-width:420px){
+    .hint{ font-size:12px; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎮 Escape Maze</h1>
-            <p>Bantu orang keluar dari labirin!</p>
-        </div>
+  <div class="game-wrap">
+    <canvas id="c"></canvas>
 
-        <div class="stats">
-            <div class="stat-box">
-                <label>Level</label>
-                <span id="levelDisplay">1</span>
-            </div>
-            <div class="stat-box">
-                <label>Gerak</label>
-                <span id="movesDisplay">0</span>
-            </div>
-            <div class="stat-box">
-                <label>Waktu</label>
-                <span id="timerDisplay">0s</span>
-            </div>
-        </div>
-
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-
-        <div class="controls">
-            <div class="control-buttons">
-                <div></div>
-                <button class="arrow-btn" onclick="moveUp()">⬆️</button>
-                <div></div>
-                <button class="arrow-btn" onclick="moveLeft()">⬅️</button>
-                <button class="arrow-btn" onclick="moveDown()">⬇️</button>
-                <button class="arrow-btn" onclick="moveRight()">➡️</button>
-            </div>
-            <button id="resetBtn" onclick="resetGame()">🔄 Mulai Ulang</button>
-        </div>
-
-        <div class="info">
-            <p><strong>🎯 Tujuan:</strong> Gerakkan pemain (biru) ke pintu keluar (hijau)</p>
-            <p><strong>⚠️ Hindari:</strong> Dinding hitam dan musuh merah</p>
-            <p><strong>📱 Kontrol:</strong> Gunakan tombol panah atau sentuh layar</p>
-        </div>
+    <div class="hud">
+      <div class="score">Skor: <span id="score">0</span></div>
+      <div class="high">High: <span id="high">0</span></div>
     </div>
 
-    <div class="overlay" id="overlay"></div>
-    <div class="success-message" id="successMessage">
-        <h2>🎉 Selamat!</h2>
-        <p id="completionStats"></p>
-        <button onclick="nextLevel()" style="margin-top: 10px;">Level Selanjutnya ➡️</button>
+    <div class="overlay" id="overlay" style="display:none;">
+      <div class="panel" id="panel">
+        <h2 id="panelTitle">Game Over</h2>
+        <p id="panelText">Skor Anda: <span id="panelScore" class="big">0</span></p>
+        <div class="actions">
+          <button class="action-btn" id="restart">Main Lagi</button>
+        </div>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+    <div class="hint">Ketuk pada layar (di kiri/kanan/atas/bawah relatif kepala ular) untuk mengarahkan · Hindari menabrak</div>
+  </div>
 
-        // Responsive canvas
-        function resizeCanvas() {
-            const containerWidth = canvas.parentElement.offsetWidth - 20;
-            if (containerWidth < 400) {
-                canvas.width = containerWidth;
-                canvas.height = containerWidth;
-            }
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const highEl = document.getElementById('high');
+  const overlay = document.getElementById('overlay');
+  const panelScore = document.getElementById('panelScore');
+  const restartBtn = document.getElementById('restart');
+
+  let DPR = Math.max(1, window.devicePixelRatio || 1);
+
+  // Config: slower snake and no auto-speedup on eat
+  let cellSize = 24;
+  let cols = 20, rows = 20;
+  let tickMs = 220;       // slower: movement interval in ms (higher => slower)
+  const minTick = 80;
+  const speedUp = 0;      // set 0 so eating tidak mempercepat (tetap pelan)
+  let tickTimer = null;
+
+  // State
+  let snake = [];
+  let dir = {x:1,y:0};
+  let pendingDir = {x:1,y:0};
+  let food = null;
+  let score = 0;
+  let high = 0;
+  let running = false;
+
+  function loadHigh(){ high = parseInt(localStorage.getItem('snake_high')||'0',10); highEl.textContent = high; }
+  function saveHigh(){ if(score>high){ high = score; localStorage.setItem('snake_high', String(high)); highEl.textContent = high; } }
+
+  function resizeCanvas(){
+    const w = Math.min(window.innerWidth, window.innerHeight*0.9);
+    const h = w;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width = Math.round(w * DPR);
+    canvas.height = Math.round(h * DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    const targetCells = 20;
+    cellSize = Math.max(12, Math.floor(w / targetCells));
+    cols = Math.floor(w / cellSize);
+    rows = Math.floor(h / cellSize);
+
+    draw();
+  }
+
+  function resetGame(){
+    score = 0;
+    scoreEl.textContent = score;
+    tickMs = 220;
+    snake = [];
+    const startX = Math.floor(cols/2);
+    const startY = Math.floor(rows/2);
+    snake.push({x:startX-1,y:startY});
+    snake.push({x:startX,y:startY});
+    snake.push({x:startX+1,y:startY});
+    dir = {x:1,y:0};
+    pendingDir = {x:1,y:0};
+    placeFood();
+    running = true;
+    overlay.style.display = 'none';
+    startTick();
+  }
+
+  function placeFood(){
+    while(true){
+      const f = { x: Math.floor(Math.random()*cols), y: Math.floor(Math.random()*rows) };
+      if(!snake.some(s=>s.x===f.x && s.y===f.y)){
+        food = f; break;
+      }
+    }
+  }
+
+  function startTick(){
+    if(tickTimer) clearInterval(tickTimer);
+    tickTimer = setInterval(update, tickMs);
+  }
+
+  function stopTick(){
+    if(tickTimer) clearInterval(tickTimer);
+    tickTimer = null;
+  }
+
+  function update(){
+    if((pendingDir.x !== -dir.x || pendingDir.y !== -dir.y)) dir = pendingDir;
+    const head = { x: (snake[snake.length-1].x + dir.x), y: (snake[snake.length-1].y + dir.y) };
+
+    if(head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows){
+      gameOver(); return;
+    }
+
+    if(snake.some(s=>s.x===head.x && s.y===head.y)){
+      gameOver(); return;
+    }
+
+    snake.push(head);
+
+    if(food && head.x===food.x && head.y===food.y){
+      score += 1;
+      scoreEl.textContent = score;
+      placeFood();
+      // no speed up (kecepatan tetap)
+      // if you want slight speed increase, uncomment below:
+      // tickMs = Math.max(minTick, tickMs - speedUp); startTick();
+    } else {
+      snake.shift();
+    }
+
+    draw();
+  }
+
+  function gameOver(){
+    running = false;
+    stopTick();
+    saveHigh();
+    panelScore.textContent = score;
+    overlay.style.display = 'flex';
+  }
+
+  function draw(){
+    const w = parseFloat(canvas.style.width);
+    const h = parseFloat(canvas.style.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#071428';
+    ctx.fillRect(0,0,w,h);
+
+    const gridW = cols * cellSize;
+    const gridH = rows * cellSize;
+    const offsetX = Math.floor((w - gridW)/2);
+    const offsetY = Math.floor((h - gridH)/2);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    for(let gx=0; gx<cols; gx++){
+      for(let gy=0; gy<rows; gy++){
+        if((gx+gy)%2===0){
+          ctx.fillRect(offsetX + gx*cellSize, offsetY + gy*cellSize, cellSize, cellSize);
         }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+      }
+    }
 
-        // Game variables
-        let gameState = {
-            level: 1,
-            playerX: 1,
-            playerY: 1,
-            moves: 0,
-            startTime: Date.now(),
-            isGameOver: false,
-            maze: [],
-            gridSize: 10,
-            enemies: []
-        };
+    if(food){
+      const fx = offsetX + food.x*cellSize;
+      const fy = offsetY + food.y*cellSize;
+      drawFruit(fx,fy,cellSize);
+    }
 
-        const TILE_SIZE = canvas.width / gameState.gridSize;
+    for(let i=0;i<snake.length;i++){
+      const s = snake[i];
+      const x = offsetX + s.x*cellSize;
+      const y = offsetY + s.y*cellSize;
+      if(i === snake.length-1){
+        roundRect(ctx,x+2,y+2,cellSize-4,cellSize-4,6, '#ffb997');
+        ctx.fillStyle = '#08202a';
+        const prev = snake.length>1 ? snake[snake.length-2] : s;
+        const hx = s.x - prev.x;
+        const hy = s.y - prev.y;
+        const ex = x + cellSize/2 + (hx*4);
+        const ey = y + cellSize/2 + (hy*4);
+        ctx.beginPath(); ctx.arc(ex,ey, Math.max(1, cellSize*0.08), 0, Math.PI*2); ctx.fill();
+      } else {
+        roundRect(ctx,x+2,y+2,cellSize-4,cellSize-4,5, '#ffd7b0');
+      }
+    }
+  }
 
-        // Maze generator
-        function generateMaze(difficulty) {
-            const maze = Array(gameState.gridSize).fill(null).map(() => 
-                Array(gameState.gridSize).fill(0)
-            );
+  function drawFruit(x,y,size){
+    const pad = Math.max(2, Math.floor(size*0.12));
+    const cx = x + size/2, cy = y + size/2;
+    ctx.beginPath();
+    ctx.fillStyle = '#ff5252';
+    ctx.ellipse(cx, cy, (size/2)-pad, (size/2)-pad, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2ecc71';
+    ctx.beginPath();
+    ctx.ellipse(cx + size*0.22, cy - size*0.35, size*0.12, size*0.06, -0.8, 0, Math.PI*2);
+    ctx.fill();
+  }
 
-            // Buat dinding random berdasarkan level
-            const wallDensity = 0.3 + (difficulty * 0.05);
-            for (let i = 0; i < gameState.gridSize; i++) {
-                for (let j = 0; j < gameState.gridSize; j++) {
-                    if ((i === 0 || j === 0 || i === gameState.gridSize - 1 || j === gameState.gridSize - 1)) {
-                        maze[i][j] = 1; // Border
-                    } else if (Math.random() < wallDensity) {
-                        maze[i][j] = 1; // Wall
-                    }
-                }
-            }
+  function roundRect(ctx,x,y,w,h,r,color){
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y, x+w,y+h, r);
+    ctx.arcTo(x+w,y+h, x,y+h, r);
+    ctx.arcTo(x,y+h, x,y, r);
+    ctx.arcTo(x,y, x+w,y, r);
+    ctx.closePath();
+    ctx.fill();
+  }
 
-            // Pastikan starting point
-            maze[1][1] = 0;
-            maze[gameState.gridSize - 2][gameState.gridSize - 2] = 0;
+  // Tap-to-direction control (ketukan)
+  function handleTap(clientX, clientY){
+    if(!running) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
-            return maze;
-        }
+    // compute grid offsets same as draw()
+    const canvasW = rect.width;
+    const canvasH = rect.height;
+    const gridW = cols * cellSize;
+    const gridH = rows * cellSize;
+    const offsetX = Math.floor((canvasW - gridW)/2);
+    const offsetY = Math.floor((canvasH - gridH)/2);
 
-        // Generate enemies
-        function generateEnemies() {
-            gameState.enemies = [];
-            const enemyCount = 1 + Math.floor(gameState.level / 2);
-            for (let i = 0; i < enemyCount; i++) {
-                gameState.enemies.push({
-                    x: Math.floor(Math.random() * (gameState.gridSize - 4)) + 2,
-                    y: Math.floor(Math.random() * (gameState.gridSize - 4)) + 2,
-                    dx: Math.random() > 0.5 ? 1 : -1,
-                    dy: Math.random() > 0.5 ? 1 : -1
-                });
-            }
-        }
+    const head = snake[snake.length-1];
+    const headCX = offsetX + head.x*cellSize + cellSize/2;
+    const headCY = offsetY + head.y*cellSize + cellSize/2;
 
-        // Initialize game
-        function initGame() {
-            gameState.playerX = 1;
-            gameState.playerY = 1;
-            gameState.moves = 0;
-            gameState.startTime = Date.now();
-            gameState.isGameOver = false;
-            gameState.maze = generateMaze(gameState.level);
-            generateEnemies();
-            document.getElementById('levelDisplay').textContent = gameState.level;
-            document.getElementById('movesDisplay').textContent = '0';
-        }
+    const dx = x - headCX;
+    const dy = y - headCY;
 
-        // Check collision
-        function canMove(x, y) {
-            if (x < 0 || x >= gameState.gridSize || y < 0 || y >= gameState.gridSize) return false;
-            if (gameState.maze[y][x] === 1) return false;
-            
-            // Check enemy collision
-            for (let enemy of gameState.enemies) {
-                if (enemy.x === x && enemy.y === y) return false;
-            }
-            
-            return true;
-        }
+    // If tap is very close (within cell), interpret relative to canvas center to avoid no-op:
+    // choose larger absolute delta to determine direction
+    if(Math.abs(dx) > Math.abs(dy)){
+      trySetDir(dx>0?1:-1, 0);
+    } else {
+      trySetDir(0, dy>0?1:-1);
+    }
+  }
 
-        // Move player
-        function movePlayer(dx, dy) {
-            if (gameState.isGameOver) return;
+  // Touch handler: detect taps (not drags)
+  let touchStartPos = null;
+  canvas.addEventListener('touchstart', (e)=>{
+    if(e.touches.length !== 1) return;
+    const t = e.touches[0];
+    touchStartPos = {x: t.clientX, y: t.clientY, time: Date.now()};
+  }, {passive:true});
 
-            const newX = gameState.playerX + dx;
-            const newY = gameState.playerY + dy;
+  canvas.addEventListener('touchend', (e)=>{
+    const t = e.changedTouches[0];
+    if(!touchStartPos) return;
+    const dx = t.clientX - touchStartPos.x;
+    const dy = t.clientY - touchStartPos.y;
+    const dt = Date.now() - touchStartPos.time;
+    touchStartPos = null;
+    // treat as tap if small move or short time
+    if(Math.hypot(dx,dy) < 30 && dt < 500){
+      handleTap(t.clientX, t.clientY);
+    }
+  }, {passive:true});
 
-            if (canMove(newX, newY)) {
-                gameState.playerX = newX;
-                gameState.playerY = newY;
-                gameState.moves++;
-                document.getElementById('movesDisplay').textContent = gameState.moves;
+  // Mouse click for desktop/testing
+  canvas.addEventListener('click', (e)=>{
+    handleTap(e.clientX, e.clientY);
+  });
 
-                // Check win condition
-                if (gameState.playerX === gameState.gridSize - 2 && 
-                    gameState.playerY === gameState.gridSize - 2) {
-                    winGame();
-                }
-            }
-        }
+  // Keyboard arrows for desktop testing
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowUp') trySetDir(0,-1);
+    if(e.key==='ArrowDown') trySetDir(0,1);
+    if(e.key==='ArrowLeft') trySetDir(-1,0);
+    if(e.key==='ArrowRight') trySetDir(1,0);
+    if(e.key===' ' && !running) resetGame();
+  });
 
-        // Move enemies
-        function moveEnemies() {
-            for (let enemy of gameState.enemies) {
-                let newX = enemy.x + enemy.dx;
-                let newY = enemy.y + enemy.dy;
+  function trySetDir(x,y){
+    // prevent opposite direction; also ignore same direction
+    if((x === -dir.x && y === -dir.y) || (x===dir.x && y===dir.y)) return;
+    pendingDir = {x,y};
+  }
 
-                if (!canMove(newX, newY)) {
-                    enemy.dx *= -1;
-                    enemy.dy *= -1;
-                    newX = enemy.x + enemy.dx;
-                    newY = enemy.y + enemy.dy;
-                }
+  restartBtn.addEventListener('click', resetGame);
 
-                enemy.x = newX;
-                enemy.y = newY;
+  window.addEventListener('resize', debounce(resizeCanvas, 120));
+  loadHigh();
+  resizeCanvas();
+  resetGame();
 
-                // Check player collision
-                if (enemy.x === gameState.playerX && enemy.y === gameState.playerY) {
-                    gameOver();
-                }
-            }
-        }
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden) stopTick(); else if(running) startTick();
+  });
 
-        // Draw game
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const tileSize = canvas.width / gameState.gridSize;
+  function debounce(fn, ms){
+    let t;
+    return function(...a){
+      clearTimeout(t);
+      t = setTimeout(()=>fn.apply(this,a), ms);
+    };
+  }
 
-            // Draw maze
-            for (let i = 0; i < gameState.gridSize; i++) {
-                for (let j = 0; j < gameState.gridSize; j++) {
-                    if (gameState.maze[i][j] === 1) {
-                        ctx.fillStyle = '#333';
-                        ctx.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
-                    }
-                }
-            }
+  // light continuous draw so head/food always visible
+  function rafLoop(){ draw(); requestAnimationFrame(rafLoop); }
+  requestAnimationFrame(rafLoop);
 
-            // Draw exit (goal)
-            ctx.fillStyle = '#4caf50';
-            ctx.fillRect(
-                (gameState.gridSize - 2) * tileSize,
-                (gameState.gridSize - 2) * tileSize,
-                tileSize,
-                tileSize
-            );
-            ctx.fillStyle = '#fff';
-            ctx.font = `bold ${tileSize * 0.6}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('🚪', (gameState.gridSize - 1.5) * tileSize, (gameState.gridSize - 1.5) * tileSize);
-
-            // Draw enemies
-            for (let enemy of gameState.enemies) {
-                ctx.fillStyle = '#ff6b6b';
-                ctx.fillRect(enemy.x * tileSize, enemy.y * tileSize, tileSize, tileSize);
-                ctx.fillStyle = '#fff';
-                ctx.font = `bold ${tileSize * 0.6}px Arial`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('👹', (enemy.x + 0.5) * tileSize, (enemy.y + 0.5) * tileSize);
-            }
-
-            // Draw player
-            ctx.fillStyle = '#2196F3';
-            ctx.fillRect(gameState.playerX * tileSize, gameState.playerY * tileSize, tileSize, tileSize);
-            ctx.fillStyle = '#fff';
-            ctx.font = `bold ${tileSize * 0.6}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('😊', (gameState.playerX + 0.5) * tileSize, (gameState.playerY + 0.5) * tileSize);
-        }
-
-        // Game loop
-        function gameLoop() {
-            if (!gameState.isGameOver) {
-                moveEnemies();
-                draw();
-
-                // Update timer
-                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
-                document.getElementById('timerDisplay').textContent = elapsed + 's';
-            }
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Win game
-        function winGame() {
-            gameState.isGameOver = true;
-            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
-            document.getElementById('completionStats').innerHTML = 
-                `Level ${gameState.level} selesai!<br>Gerak: ${gameState.moves} | Waktu: ${elapsed}s`;
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('successMessage').classList.add('show');
-        }
-
-        // Game over
-        function gameOver() {
-            gameState.isGameOver = true;
-            document.getElementById('completionStats').innerHTML = 
-                `<span style="color: #ff6b6b;">Game Over! Tertangkap musuh!</span><br>Coba lagi...`;
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('successMessage').classList.add('show');
-        }
-
-        // Next level
-        function nextLevel() {
-            gameState.level++;
-            document.getElementById('overlay').classList.remove('show');
-            document.getElementById('successMessage').classList.remove('show');
-            initGame();
-            gameLoop();
-        }
-
-        // Reset game
-        function resetGame() {
-            gameState.level = 1;
-            document.getElementById('overlay').classList.remove('show');
-            document.getElementById('successMessage').classList.remove('show');
-            initGame();
-        }
-
-        // Movement functions
-        function moveUp() { movePlayer(0, -1); }
-        function moveDown() { movePlayer(0, 1); }
-        function moveLeft() { movePlayer(-1, 0); }
-        function moveRight() { movePlayer(1, 0); }
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp') { moveUp(); e.preventDefault(); }
-            if (e.key === 'ArrowDown') { moveDown(); e.preventDefault(); }
-            if (e.key === 'ArrowLeft') { moveLeft(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { moveRight(); e.preventDefault(); }
-        });
-
-        // Touch controls
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        canvas.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 0) moveRight();
-                else moveLeft();
-            } else {
-                if (diffY > 0) moveDown();
-                else moveUp();
-            }
-        });
-
-        // Start game
-        initGame();
-        gameLoop();
-    </script>
+})();
+</script>
 </body>
 </html>
